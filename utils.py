@@ -6,7 +6,7 @@ import random
 receiptsdict = {}
 
 
-def createrepairrequest():
+def createrepairrequest():  # создание заявки на ремонт
     initials = input("Please, input your initials: ")
 
     print("Choose the type of product you want to repair: ")
@@ -50,7 +50,7 @@ def createrepairrequest():
     return receiptsdict[num]
 
 
-def receiptsprint(sw):
+def receiptsprint(sw):  # вывод квитанций на экран
     if sw == 0:
         for i, k in receiptsdict.items():
             print(f"Receipt number: {i}, Info: {k}")
@@ -58,7 +58,7 @@ def receiptsprint(sw):
         print(f"Receipt number: {sw}, Info: {receiptsdict.get(sw)}")
 
 
-def receiptsinfo():
+def receiptsinfo():  # получение информации о квитанции
     print(list(receiptsdict.keys()))
 
     info = input("Enter your receipt's number or initials: ")
@@ -81,7 +81,7 @@ def receiptsinfo():
             print("Receipts ordered with this initials are not found")
 
 
-def menu():
+def menu():  # меню действий
     print("Choose an action:")
     print("1. Create repair request")
     print("2. Show info about receipt(s)")
