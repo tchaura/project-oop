@@ -13,7 +13,6 @@ class Phone(Device):
 
     def __init__(self, mark, os, description):
         super(Phone, self).__init__(mark, description, name="Phone")
-
         self._os = os
 
     def __str__(self):
@@ -22,13 +21,13 @@ class Phone(Device):
 
 class Notebook(Device):
 
-    def __init__(self, mark, os, dateofmanufacturing, description):
+    def __init__(self, mark, os, date_of_manufacturing, description):
         super(Notebook, self).__init__(mark, description, name="Notebook")
-        self._dateOfManufacturing = dateofmanufacturing
+        self._date_of_manufacturing = date_of_manufacturing
         self._os = os
 
     def __str__(self):
-        return f"{super().__str__()}, OS: {self._os}, Date of manufacturing: {self._dateOfManufacturing}"
+        return f"{super().__str__()}, OS: {self._os}, Date of manufacturing: {self._date_of_manufacturing}"
 
 
 class TV(Device):

@@ -44,18 +44,18 @@ for receipt in receipts:
 
 # create_receipt = f"""
 #         INSERT INTO
-#           receipts (number, typeofdevice, mark, OS, dateofmanufacturing, diagonal, description, dateofreceiving, dateofrepair, initials, status)
+#           receipts (number, typeofdevice, mark, OS, date_of_manufacturing, diagonal, description, date_of_receiving, date_of_repair, initials, status)
 #         VALUES
 #           (NULL, "sdasdfadf", "sdf", "dfsdg", "asff", 23, "dfsg", "ssgfs", "sgfs", "dsfsg", "fsf");
 #         """
 # execute_query(connection, create_receipt)
 # receiptsdict = {1: Receipt(1, Phone("Xiaomi", "Android", "MIUI is shit pls help"), "2022-02-24", "2022-02-26", "Antony",
-#                            Receipt.listOfStatuses[2]),
+#                            Receipt.list_of_statuses[2]),
 #                 2: Receipt(2, TV("Samsung", "27", "Screen is white"), "2022-03-05", "2022-03-11", "Andrey",
-#                            Receipt.listOfStatuses[2]),
+#                            Receipt.list_of_statuses[2]),
 #                 3: Receipt(3, Notebook("Asus", "Windows 11", "2012-03-02", "Doesn't start"), "2022-02-13", "2022-02-15",
-#                            "Dmitry", Receipt.listOfStatuses[2]),
+#                            "Dmitry", Receipt.list_of_statuses[2]),
 #                 4: Receipt(4, TV("LG", 40, "Doesn't work"), "2021-04-25", "2021-04-30", "Vitaly",
-#                            Receipt.listOfStatuses[2]),
+#                            Receipt.list_of_statuses[2]),
 #                 5: Receipt(5, Phone("Samsung", "Android", "Works slowly"), "2021-07-15", "2021-07-17", "Max",
-#                            Receipt.listOfStatuses[2])}
+#                            Receipt.list_of_statuses[2])}

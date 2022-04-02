@@ -6,35 +6,35 @@ import random
 receiptsdict = {}
 
 
-def createrepairrequest():  # создание заявки на ремонт
+def create_repair_request():  # создание заявки на ремонт
     initials = input("Please, input your initials: ")
 
     print("Choose the type of product you want to repair: ")
-    for i in range(len(Receipt.listOfProducts)):
-        print(f"{i + 1}. {Receipt.listOfProducts[i]}")
+    for i in range(len(Receipt.list_of_products)):
+        print(f"{i + 1}. {Receipt.list_of_products[i]}")
     try:
-        sw = Receipt.listOfProducts[int(input()) - 1]
+        sw = Receipt.list_of_products[int(input()) - 1]
     except:
         return "Wrong number"
 
     mark = input("Input mark: ")
     description = input("Input description: ")
 
-    repairingdevice = None
+    repairing_device = None
     if sw == "Phone":
         os = input("Input OS: ")
-        repairingdevice = Phone(mark, os, description)
+        repairing_device = Phone(mark, os, description)
 
     if sw == "Notebook":
         os = input("Input OS: ")
-        dateofmanufacturing = input("Input date of manufacturing in the format \"YYYY-MM-DD\": ")
-        repairingdevice = Notebook(mark, os, dateofmanufacturing, description)
+        date_of_manufacturing = input("Input date of manufacturing in the format \"YYYY-MM-DD\": ")
+        repairing_device = Notebook(mark, os, date_of_manufacturing, description)
 
     if sw == "TV":
         diagonal = input("Input diagonal: ")
-        repairingdevice = TV(mark, diagonal, description)
+        repairing_device = TV(mark, diagonal, description)
 
-    dateofreceiving = datetime.date.isoformat(datetime.date.today())
+    date_of_receiving = datetime.date.isoformat(datetime.date.today())
     status = "repairing"
 
     if not receiptsdict.keys():
@@ -42,15 +42,15 @@ def createrepairrequest():  # создание заявки на ремонт
     else:
         num = len(receiptsdict.keys()) + 1
 
-    dateofrepair = datetime.date.today() + datetime.timedelta(random.randint(1, 5))
+    date_of_repair = datetime.date.today() + datetime.timedelta(random.randint(1, 5))
 
-    r = Receipt(num, repairingdevice, dateofreceiving, dateofrepair, initials, status)
+    r = Receipt(num, repairing_device, date_of_receiving, date_of_repair, initials, status)
 
     receiptsdict[num] = r
     return receiptsdict[num]
 
 
-def receiptsprint(sw):  # вывод квитанций на экран
+def receipts_print(sw):  # вывод квитанций на экран
     if sw == 0:
         for i, k in receiptsdict.items():
             print(f"Receipt number: {i}, Info: {k}")
@@ -58,7 +58,7 @@ def receiptsprint(sw):  # вывод квитанций на экран
         print(f"Receipt number: {sw}, Info: {receiptsdict.get(sw)}")
 
 
-def receiptsinfo():  # получение информации о квитанции
+def receipts_info():  # получение информации о квитанции
     print(list(receiptsdict.keys()))
 
     info = input("Enter your receipt's number or initials: ")
@@ -75,7 +75,7 @@ def receiptsinfo():  # получение информации о квитанц
         isfound = False
         for i in receiptsdict.keys():
             if receiptsdict.get(i).initials == info:
-                receiptsprint(i)
+                receipts_print(i)
                 isfound = True
         if not isfound:
             print("Receipts ordered with this initials are not found")
@@ -89,9 +89,9 @@ def menu():  # меню действий
     sw = int(input())
 
     if sw == 1:
-        createrepairrequest()
+        create_repair_request()
     elif sw == 2:
-        receiptsinfo()
+        receipts_info()
     else:
         print("Please, enter the correct number")
         return 0
