@@ -1,8 +1,8 @@
 class Receipt:
 
-    def __init__(self, num, typeofproduct, dateofreceiving, dateofrepair, initials, status):
+    def __init__(self, num, repairingdevice, dateofreceiving, dateofrepair, initials, status):
         self._num = num
-        self._typeOfProduct = typeofproduct
+        self._repairingDevice = repairingdevice
         self._dateOfReceiving = dateofreceiving
         self._dateOfRepair = dateofrepair
         self._initials = initials
@@ -16,6 +16,6 @@ class Receipt:
         return self._initials
 
     def __str__(self):
-        return f"Number of receipt: {self._num}, {self._typeOfProduct}, Date of receiving: " \
+        return f"Number of receipt: {self._num}, {self._repairingDevice}, Date of receiving: " \
                f"{self._dateOfReceiving}, Date of repair: {self._dateOfRepair}, Initials: {self._initials}, Status: " \
                f"{self._status} "

@@ -1,3 +1,3 @@
-from utils import *
+from utils import createrepairrequest
 
 print(createrepairrequest())

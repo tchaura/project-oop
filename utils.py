@@ -1,5 +1,5 @@
-from devices import *
-from receipt import *
+from devices import Phone, TV, Notebook
+from receipt import Receipt
 import datetime
 import random
 
@@ -20,19 +20,19 @@ def createrepairrequest():  # создание заявки на ремонт
     mark = input("Input mark: ")
     description = input("Input description: ")
 
-    typeofproduct = None
+    repairingdevice = None
     if sw == "Phone":
         os = input("Input OS: ")
-        typeofproduct = Phone(mark, os, description)
+        repairingdevice = Phone(mark, os, description)
 
     if sw == "Notebook":
         os = input("Input OS: ")
         dateofmanufacturing = input("Input date of manufacturing in the format \"YYYY-MM-DD\": ")
-        typeofproduct = Notebook(mark, os, dateofmanufacturing, description)
+        repairingdevice = Notebook(mark, os, dateofmanufacturing, description)
 
     if sw == "TV":
         diagonal = input("Input diagonal: ")
-        typeofproduct = TV(mark, diagonal, description)
+        repairingdevice = TV(mark, diagonal, description)
 
     dateofreceiving = datetime.date.isoformat(datetime.date.today())
     status = "repairing"
@@ -40,11 +40,11 @@ def createrepairrequest():  # создание заявки на ремонт
     if not receiptsdict.keys():
         num = 1
     else:
-        num = list(receiptsdict.keys())[-1] + 1
+        num = len(receiptsdict.keys()) + 1
 
     dateofrepair = datetime.date.today() + datetime.timedelta(random.randint(1, 5))
 
-    r = Receipt(num, typeofproduct, dateofreceiving, dateofrepair, initials, status)
+    r = Receipt(num, repairingdevice, dateofreceiving, dateofrepair, initials, status)
 
     receiptsdict[num] = r
     return receiptsdict[num]
@@ -73,7 +73,7 @@ def receiptsinfo():  # получение информации о квитанц
             print("Receipt with this number is not found")
     else:
         isfound = False
-        for i in range(1, len(list(receiptsdict.values())) + 1):
+        for i in receiptsdict.keys():
             if receiptsdict.get(i).initials == info:
                 receiptsprint(i)
                 isfound = True
