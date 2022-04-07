@@ -1,5 +1,10 @@
-class Receipt:
+"""
+    Module with Receipt class
+"""
 
+
+class Receipt:
+    """ Class "Receipt" """
     def __init__(self, num, repairing_device, date_of_receiving, date_of_repair, initials, status):
         self._num = num
         self._repairing_device = repairing_device
@@ -13,9 +18,10 @@ class Receipt:
 
     @property
     def initials(self):
+        """ Returns customer intitals"""
         return self._initials
 
     def __str__(self):
         return f"Number of receipt: {self._num}, {self._repairing_device}, Date of receiving: " \
-               f"{self._date_of_receiving}, Date of repair: {self._date_of_repair}, Initials: {self._initials}, Status: " \
-               f"{self._status} "
+               f"{self._date_of_receiving}, Date of repair: {self._date_of_repair}, " \
+               f"Initials: {self._initials}, Status: {self._status} "
