@@ -3,6 +3,6 @@
     Main file
 """
 
-from utils import create_repair_request
+from utils import menu
 
-print(create_repair_request())
+menu()

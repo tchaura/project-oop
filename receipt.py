@@ -22,6 +22,6 @@ class Receipt:
         return self._initials
 
     def __str__(self):
-        return f"Number of receipt: {self._num}, {self._repairing_device}, Date of receiving: " \
+        return f"Number of receipt: {self._num}, {self._repairing_device},\nDate of receiving: " \
                f"{self._date_of_receiving}, Date of repair: {self._date_of_repair}, " \
                f"Initials: {self._initials}, Status: {self._status} "

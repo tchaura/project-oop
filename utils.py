@@ -60,24 +60,21 @@ def create_repair_request():
 def receipts_print(switch):
     """ Prints receipts in console"""
     if switch == 0:
-        for i, k in receiptsdict.items():
-            print(f"Receipt number: {i}, Info: {k}")
+        for value in receiptsdict.values():
+            print(f"\nReceipt info: {value}")
     elif switch > 0 and switch in receiptsdict:
-        print(f"Receipt number: {switch}, Info: {receiptsdict.get(switch)}")
+        print(f"\nReceipt info: {receiptsdict.get(switch)}")
 
 
 def receipts_info():
     """ Gets info about receipt """
-    print(list(receiptsdict.keys()))
 
     info = input("Enter your receipt's number or initials: ")
 
     if info.isnumeric():
         info = int(info)
         if info in list(receiptsdict):
-            for k, val in receiptsdict:
-                if k == info:
-                    print(val)
+            receipts_print(info)
         else:
             print("Receipt with this number is not found")
     else:
@@ -92,15 +89,19 @@ def receipts_info():
 
 def menu():
     """ Menu of actions with receipts """
-    print("Choose an action:")
-    print("1. Create repair request")
-    print("2. Show info about receipt(s)")
+    while True:
+        print("\nChoose an action:")
+        print("1. Create repair request")
+        print("2. Show info about receipt(s)")
+        print("3. Exit")
 
-    switch = int(input())
+        switch = int(input())
 
-    if switch == 1:
-        create_repair_request()
-    elif switch == 2:
-        receipts_info()
-    else:
-        print("Please, enter the correct number")
+        if switch == 1:
+            create_repair_request()
+        elif switch == 2:
+            receipts_info()
+        elif switch == 3:
+            break
+        else:
+            print("Please, enter the correct number")
