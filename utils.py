@@ -73,11 +73,124 @@ def receipts_print(switch):
             print(f"\nReceipt info: {value}")
     elif switch > 0 and switch in receiptsdict:
         print(f"\nReceipt info: {receiptsdict.get(switch)}")
+    else:
+        print("Unknown receipt number")
+
+
+def administration_panel():
+    """
+    Shows an administration panel
+    """
+
+    _admins_dict = {"admin": ["password", "Ivanov Ivan Ivanovich"]}
+
+    login = input("Input login: ")
+    password = input("Input password: ")
+
+    if login in _admins_dict and _admins_dict.get(login)[0] == password:
+        print("Login is successful.")
+        while True:
+            print("\nChoose action:")
+            print("\nActions with admins:")
+            print("  1. View admins list")
+            print("  2. Remove an admin from admins list")
+            print("  3. Add new admin")
+            print("\nActions with receipts:")
+            print("  4. Change repairing status")
+            print("  5. Change date of repair")
+            print("  6. View receipt information")
+
+            print("\n7. Exit")
+            switch = int(input())
+
+            if switch == 1:
+                view_admins_list(_admins_dict)
+
+            elif switch == 2:
+                remove_admin(_admins_dict)
+
+            elif switch == 3:
+                add_admin(_admins_dict)
+
+            elif switch == 4:
+                change_repairing_status()
+
+            elif switch == 5:
+                change_date_of_repair()
+
+            elif switch == 6:
+                num = int(input("Input receipt number: "))
+                receipts_print(num)
+
+            elif switch == 7:
+                break
+
+    else:
+        print("Login and/or password is incorrect")
+
+
+def view_admins_list(_admins_dict):
+    """
+    Shows list of admins
+    :param _admins_dict:
+    """
+    if len(_admins_dict) == 0:
+        print("Admins list is empty")
+        return 0
+
+    counter = 1
+    for i, k in _admins_dict.items():
+        print(f"{counter}. Login: {i}, Password: {k[0]}, Initials: {k[1]}")
+        counter += 1
+        return 1
+
+
+def remove_admin(_admins_dict):
+    """
+    Remove admin from admins list
+    :param _admins_dict:
+    """
+    counter = int(input("Enter the number:"))
+    _admins_dict.pop(list(_admins_dict.keys())[counter - 1])
+
+
+def add_admin(_admins_dict):
+    """
+    Adds an admin to admins list
+    :param _admins_dict:dict
+    """
+    login = input("Input new admin's login: ")
+    password = input("Input new admin's password: ")
+    initials = input("Input new admin's initials: ")
+    _admins_dict[login] = [password, initials]
+
+
+def change_repairing_status():
+    """Change repairing status"""
+    num = int(input("Input receipt number: "))
+    if num in receiptsdict:
+        status = int(input("Choose the status: \n(1. Repairing  2. Done  3.Issued)\n"))
+        receiptsdict.get(num).status = Receipt.list_of_statuses[status - 1]
+    else:
+        print("Unknown number")
+
+
+def change_date_of_repair():
+    """
+    Changes the date of repair
+    """
+    num = int(input("Input receipt number: "))
+    if num in receiptsdict:
+        new_date = input("Input date in format \"YYYY-MM-DD\": ")
+        receiptsdict.get(num).date_of_repair = new_date
+    else:
+        print("Unknown number")
 
 
 def receipts_info():
-    """ Gets info about receipt """
-
+    """
+    Gets info about receipt
+    """
     info = input("Enter your receipt's number or initials: ")
 
     if info.isnumeric():
@@ -102,7 +215,8 @@ def menu():
         print("\nChoose an action:")
         print("1. Create repair request")
         print("2. Show info about receipt(s)")
-        print("3. Exit")
+        print("3. Show admin panel")
+        print("4. Exit")
 
         switch = int(input())
 
@@ -111,6 +225,8 @@ def menu():
         elif switch == 2:
             receipts_info()
         elif switch == 3:
+            administration_panel()
+        elif switch == 4:
             break
         else:
             print("Please, enter the correct number")
