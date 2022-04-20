@@ -7,7 +7,16 @@ from devices import Phone, TV, Notebook
 from receipt import Receipt
 
 
-receiptsdict = {}
+receiptsdict = {1: Receipt(1, Phone("Xiaomi", "Android", "MIUI is shit pls help"),
+                           "2022-02-24", "2022-02-26", "Antony", Receipt.list_of_statuses[2]),
+                2: Receipt(2, TV("Samsung", "27", "Screen is white"), "2022-03-05",
+                           "2022-03-11", "Andrey", Receipt.list_of_statuses[2]),
+                3: Receipt(3, Notebook("Asus", "Windows 11", "2012-03-02", "Doesn't start"),
+                           "2022-02-13", "2022-02-15", "Dmitry", Receipt.list_of_statuses[2]),
+                4: Receipt(4, TV("LG", 40, "Doesn't work"), "2021-04-25", "2021-04-30", "Vitally",
+                           Receipt.list_of_statuses[2]),
+                5: Receipt(5, Phone("Samsung", "Android", "Works slowly"),
+                           "2021-07-15", "2021-07-17", "Max", Receipt.list_of_statuses[2])}
 
 
 def create_repair_request():
@@ -60,24 +69,21 @@ def create_repair_request():
 def receipts_print(switch):
     """ Prints receipts in console"""
     if switch == 0:
-        for i, k in receiptsdict.items():
-            print(f"Receipt number: {i}, Info: {k}")
+        for value in receiptsdict.values():
+            print(f"\nReceipt info: {value}")
     elif switch > 0 and switch in receiptsdict:
-        print(f"Receipt number: {switch}, Info: {receiptsdict.get(switch)}")
+        print(f"\nReceipt info: {receiptsdict.get(switch)}")
 
 
 def receipts_info():
     """ Gets info about receipt """
-    print(list(receiptsdict.keys()))
 
     info = input("Enter your receipt's number or initials: ")
 
     if info.isnumeric():
         info = int(info)
         if info in list(receiptsdict):
-            for k, val in receiptsdict:
-                if k == info:
-                    print(val)
+            receipts_print(info)
         else:
             print("Receipt with this number is not found")
     else:
@@ -92,15 +98,19 @@ def receipts_info():
 
 def menu():
     """ Menu of actions with receipts """
-    print("Choose an action:")
-    print("1. Create repair request")
-    print("2. Show info about receipt(s)")
+    while True:
+        print("\nChoose an action:")
+        print("1. Create repair request")
+        print("2. Show info about receipt(s)")
+        print("3. Exit")
 
-    switch = int(input())
+        switch = int(input())
 
-    if switch == 1:
-        create_repair_request()
-    elif switch == 2:
-        receipts_info()
-    else:
-        print("Please, enter the correct number")
+        if switch == 1:
+            create_repair_request()
+        elif switch == 2:
+            receipts_info()
+        elif switch == 3:
+            break
+        else:
+            print("Please, enter the correct number")
