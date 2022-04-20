@@ -37,7 +37,6 @@ class Notebook(Device):
         return f"{super().__str__()}, OS: {self._os}, Date of manufacturing: " \
                f"{self._date_of_manufacturing}"
 
-
 class TV(Device):
     """ Class "TV" """
     def __init__(self, mark, diagonal, description):

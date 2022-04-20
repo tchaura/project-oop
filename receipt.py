@@ -2,15 +2,16 @@
     Module with Receipt class
 """
 
+
 class Receipt:
     """ Class "Receipt" """
-    def __init__(self, num, repairing_device, date_of_receiving, date_of_repair, initials, status):
+    def __init__(self, num, repairing_device, date_of_receiving, arguments: list):
         self._num = num
         self._repairing_device = repairing_device
         self._date_of_receiving = date_of_receiving
-        self._date_of_repair = date_of_repair
-        self._initials = initials
-        self._status = status
+        self._date_of_repair = arguments[0]
+        self._initials = arguments[1]
+        self._status = arguments[2]
 
     list_of_products = ["Phone", "Notebook", "TV"]
     list_of_statuses = ["repairing", "done", "issued"]
