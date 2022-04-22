@@ -5,24 +5,16 @@ import datetime
 import random
 from devices import Phone, TV, Notebook
 from receipt import Receipt
-
-
-receipts_dict = {1: Receipt(1, Phone("Xiaomi", "Android", "MIUI is shit pls help"),
-                           "2022-02-24", ["2022-02-26", "Antony", Receipt.list_of_statuses[2]]),
-                 2: Receipt(2, TV("Samsung", "27", "Screen is white"), "2022-03-05",
-                           ["2022-03-11", "Andrey", Receipt.list_of_statuses[2]]),
-                 3: Receipt(3, Notebook("Asus", "Windows 11", "2012-03-02", "Doesn't start"),
-                           "2022-02-13", ["2022-02-15", "Dmitry", Receipt.list_of_statuses[2]]),
-                 4: Receipt(4, TV("LG", 40, "Doesn't work"), "2021-04-25", ["2021-04-30", "Vitally",
-                           Receipt.list_of_statuses[2]]),
-                 5: Receipt(5, Phone("Samsung", "Android", "Works slowly"),
-                           "2021-07-15", ["2021-07-17", "Max", Receipt.list_of_statuses[2]])}
+from dbscripts import execute_query, execute_read_query, new_connection
 
 
 def create_repair_request():
     """ Creates repair request """
     initials = input("Please, input your initials: ")
 
+    operating_system = "null"
+    date_of_manufacturing = "null"
+    diagonal = "null"
     print("Choose the type of product you want to repair: ")
     k = 1
     for i in Receipt.list_of_products:
@@ -53,26 +45,58 @@ def create_repair_request():
     date_of_receiving = datetime.date.isoformat(datetime.date.today())
     status = "repairing"
 
-    if not receipts_dict.keys():
-        num = 1
+    if execute_read_query(new_connection,
+                          "select num from receipts order by num desc limit 1"):
+        num = execute_read_query(new_connection,
+                                 "select num from receipts order by num desc limit 1")[0][0] + 1
     else:
-        num = len(receipts_dict.keys()) + 1
+        num = 1
 
     date_of_repair = datetime.date.today() + datetime.timedelta(random.randint(1, 5))
 
     receipt = Receipt(num, repairing_device, date_of_receiving, [date_of_repair, initials, status])
-
-    receipts_dict[num] = receipt
-    return receipts_dict[num]
+    create_receipt = f"""
+           INSERT INTO
+             receipts (num, mark, operating_system, diagonal, date_of_manufacturing, description, 
+             date_of_receiving, date_of_repair, initials, status)
+           VALUES
+             ({num}, '{mark}', '{operating_system}', {diagonal}, '{date_of_manufacturing}', 
+             '{description}', '{date_of_receiving}', '{date_of_repair}', '{initials}', '{status}');
+           """
+    execute_query(new_connection, create_receipt)
+    return receipt
 
 
 def receipts_print(switch):
-    """ Prints receipts in console"""
-    if switch == 0:
-        for value in receipts_dict.values():
-            print(f"\nReceipt info: {value}")
-    elif switch > 0 and switch in receipts_dict:
-        print(f"\nReceipt info: {receipts_dict.get(switch)}")
+    """ Prints formatted info about receipts in console"""
+    if isinstance(switch, list):
+        temp = []
+        for i in switch:
+            temp.append(i[0])
+        for i in temp:
+            receipts_print(i)
+    elif switch > 0 and execute_read_query(new_connection, f"SELECT num from receipts "
+                                                           f"where num = {switch}"):
+        print("\nReceipt info:")
+        receipts = execute_read_query(new_connection, f"select * from receipts "
+                                                      f"where num = {switch}")
+        for receipt in receipts:
+            if receipt[3] is not None:
+                print("Type: TV")
+                print(f"Mark: {receipt[1]},")
+                print(f"Diagonal: {receipt[3]}")
+            elif receipt[4] is not None:
+                print("Type: Notebook")
+                print(f"Mark: {receipt[1]}")
+                print(f"Operating system: {receipt[2]}")
+                print(f"Date of manufacturing: {receipt[4]}")
+            else:
+                print("Type: Phone")
+                print(f"Mark: {receipt[1]}")
+                print(f"Operating system: {receipt[2]}")
+            print(f"Description: {receipt[5]}\nDate of receiving: {receipt[6]},\n"
+                  f"Date of repair: {receipt[7]},\nInitials: {receipt[8]},\n"
+                  f"Status: {receipt[9]}.")
     else:
         print("Unknown receipt number")
 
@@ -82,12 +106,11 @@ def administration_panel():
     Shows an administration panel
     """
 
-    _admins_dict = {"admin": ["password", "Ivanov Ivan Ivanovich"]}
-
     login = input("Input login: ")
     password = input("Input password: ")
 
-    if login in _admins_dict and _admins_dict.get(login)[0] == password:
+    if execute_read_query(new_connection, f"select login, password from admins "
+                                          f"where login = '{login}' and password = '{password}'"):
         print("Login is successful.")
         while True:
             print("\nChoose action:")
@@ -104,13 +127,13 @@ def administration_panel():
             switch = int(input())
 
             if switch == 1:
-                view_admins_list(_admins_dict)
+                view_admins_list()
 
             elif switch == 2:
-                remove_admin(_admins_dict)
+                remove_admin()
 
             elif switch == 3:
-                add_admin(_admins_dict)
+                add_admin()
 
             elif switch == 4:
                 change_repairing_status()
@@ -129,50 +152,50 @@ def administration_panel():
         print("Login and/or password is incorrect")
 
 
-def view_admins_list(_admins_dict):
+def view_admins_list():
     """
     Shows list of admins
-    :param _admins_dict:
     """
-    if len(_admins_dict) == 0:
+    if not execute_read_query(new_connection, "select * from admins"):
         print("Admins list is empty")
         return 0
 
-    counter = 1
-    for i, k in _admins_dict.items():
-        print(f"{counter}. Login: {i}, Password: {k[0]}, Initials: {k[1]}")
-        counter += 1
-        return 1
+    admins = execute_read_query(new_connection, "select * from admins")
+    for admin in admins:
+        print(f"Login: {admin[0]}, Password: {admin[1]}, Initials: {admin[2]}")
+    return 1
 
 
-def remove_admin(_admins_dict):
+def remove_admin():
     """
     Remove admin from admins list
-    :param _admins_dict:
     """
-    counter = int(input("Enter the number:"))
-    _admins_dict.pop(list(_admins_dict.keys())[counter - 1])
+    login = input("Enter login of admin you want to delete:")
+    if execute_read_query(new_connection, f"select * from admins where login = '{login}'"):
+        execute_query(new_connection, f"delete from admins where login = '{login}'")
 
 
-def add_admin(_admins_dict):
+def add_admin():
     """
     Adds an admin to admins list
-    :param _admins_dict:dict
     """
     login = input("Input new admin's login: ")
     password = input("Input new admin's password: ")
     initials = input("Input new admin's initials: ")
-    _admins_dict[login] = [password, initials]
+    execute_query(new_connection, f"insert into admins(login, password, initials) "
+                                  f"values ('{login}', '{password}', '{initials}')")
 
 
 def change_repairing_status():
-    """Change repairing status"""
+    """Changes repairing status"""
     num = int(input("Input receipt number: "))
-    if num in receipts_dict:
+    receipts_print(num)
+    if execute_read_query(new_connection, f"SELECT num from receipts "
+                                          f"where num = {num}"):
         status = int(input("Choose the status: \n(1. Repairing  2. Done  3.Issued)\n"))
-        receipts_dict.get(num).status = Receipt.list_of_statuses[status - 1]
-    else:
-        print("Unknown number")
+        execute_query(new_connection, f"update receipts "
+                                      f"set status = '{Receipt.list_of_statuses[status - 1]}' "
+                                      f"where num = {num}")
 
 
 def change_date_of_repair():
@@ -180,32 +203,35 @@ def change_date_of_repair():
     Changes the date of repair
     """
     num = int(input("Input receipt number: "))
-    if num in receipts_dict:
+    receipts_print(num)
+    if execute_read_query(new_connection, f"SELECT num from receipts "
+                                          f"where num = {num}"):
         new_date = input("Input date in format \"YYYY-MM-DD\": ")
-        receipts_dict.get(num).date_of_repair = new_date
-    else:
-        print("Unknown number")
+        execute_query(new_connection, f"update receipts "
+                                      f"set date_of_repair = '{new_date}' "
+                                      f"where num = {num}")
 
 
-def receipts_info():
+def receipts_search(info=None):
     """
-    Gets info about receipt
+    Searches for receipts matching given parameters
     """
-    info = input("Enter your receipt's number or initials: ")
+    if info is None:
+        info = input("Enter your receipt's number or initials: ")
 
     if info.isnumeric():
         info = int(info)
-        if info in list(receipts_dict):
+        if info > 0 and execute_read_query(new_connection, f"SELECT num from receipts "
+                                                           f"where num = {info}"):
             receipts_print(info)
         else:
             print("Receipt with this number is not found")
     else:
-        is_found = False
-        for i in receipts_dict:
-            if receipts_dict.get(i).initials == info:
-                receipts_print(i)
-                is_found = True
-        if not is_found:
+        if execute_read_query(new_connection, f"SELECT num from receipts "
+                                              f"where initials = '{info}'"):
+            receipts_print(execute_read_query(new_connection, f"SELECT num from receipts "
+                                                              f"where initials = '{info}'"))
+        else:
             print("Receipts ordered with this initials are not found")
 
 
@@ -223,7 +249,7 @@ def menu():
         if switch == 1:
             create_repair_request()
         elif switch == 2:
-            receipts_info()
+            receipts_search()
         elif switch == 3:
             administration_panel()
         elif switch == 4:
